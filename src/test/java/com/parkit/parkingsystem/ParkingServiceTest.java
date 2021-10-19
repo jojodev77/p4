@@ -10,17 +10,23 @@ import com.parkit.parkingsystem.util.InputReaderUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Date;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ParkingServiceTest {
 
+	@InjectMocks
     private static ParkingService parkingService;
 
     @Mock
@@ -29,22 +35,15 @@ public class ParkingServiceTest {
     private static ParkingSpotDAO parkingSpotDAO;
     @Mock
     private static TicketDAO ticketDAO;
+    
+   
+    
+    
+    
 
     @BeforeEach
     private void setUpPerTest() {
         try {
-            when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
-
-            ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
-            Ticket ticket = new Ticket();
-            ticket.setInTime(new Date(System.currentTimeMillis() - (60*60*1000)));
-            ticket.setParkingSpot(parkingSpot);
-            ticket.setVehicleRegNumber("ABCDEF");
-            when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
-            when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
-
-            when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
-
             parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         } catch (Exception e) {
             e.printStackTrace();
@@ -53,9 +52,34 @@ public class ParkingServiceTest {
     }
 
     @Test
-    public void processExitingVehicleTest(){
+    public void processExitingVehicleTest() throws Exception{
+    	 ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
+    	 Ticket ticket = new Ticket();
+         ticket.setInTime(new Date(System.currentTimeMillis() - (60*60*1000)));
+         ticket.setParkingSpot(parkingSpot);
+         ticket.setVehicleRegNumber("ABCDEF");
+    	  when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
+    	 when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
+    	  when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
+          when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
         parkingService.processExitingVehicle();
         verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
+    }
+    
+    @Test
+    public void getNextParkingNumberIfAvailableOfCarTest() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+    	 when(inputReaderUtil.readSelection()).thenReturn(1);
+    	 when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(1);
+    	 ParkingSpot parkingSpot =  parkingService.getNextParkingNumberIfAvailable();
+    	  assertEquals(ParkingType.CAR, parkingSpot.getParkingType());
+    }
+    
+    @Test
+    public void getNextParkingNumberIfAvailableOfBikeTest() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+    	 when(inputReaderUtil.readSelection()).thenReturn(2);
+    	 when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(2);
+    	 ParkingSpot parkingSpot =  parkingService.getNextParkingNumberIfAvailable();
+    	  assertEquals(ParkingType.BIKE, parkingSpot.getParkingType());
     }
 
 }
