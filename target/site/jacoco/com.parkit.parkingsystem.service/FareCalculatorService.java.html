@@ -6,13 +6,17 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang.NullArgumentException;
 
 import com.parkit.parkingsystem.constants.Fare;
+import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.model.Ticket;
 
-<span class="fc" id="L11">public class FareCalculatorService {</span>
+<span class="fc" id="L12">public class FareCalculatorService {</span>
+	
+<span class="fc" id="L14">	 TicketDAO ticketDAO = new TicketDAO();</span>
 
     public void calculateFare(Ticket ticket){
-<span class="pc bpc" id="L14" title="2 of 6 branches missed.">        if( (ticket.getOutTime() == null ) || ticket.getInTime() == null || (ticket.getOutTime().before(ticket.getInTime())) ){</span>
-<span class="fc" id="L15">            throw new IllegalArgumentException(&quot;Out time provided is incorrect:&quot;+ticket.getOutTime().toString());</span>
+    
+<span class="pc bpc" id="L18" title="2 of 6 branches missed.">        if( (ticket.getOutTime() == null ) || ticket.getInTime() == null || (ticket.getOutTime().before(ticket.getInTime())) ){</span>
+<span class="fc" id="L19">            throw new IllegalArgumentException(&quot;Out time provided is incorrect:&quot;+ticket.getOutTime().toString());</span>
         }
 
         //TODO: Some tests are failing here. Need to check if this logic is correct
@@ -22,61 +26,78 @@ import com.parkit.parkingsystem.model.Ticket;
          * @param ticket.getOutTime().getTime
          * @param ticket.getInTime().getTime()
          */
-<span class="fc" id="L25">        long diff  = ticket.getOutTime().getTime() - ticket.getInTime().getTime();</span>
+<span class="fc" id="L29">        long diff  = ticket.getOutTime().getTime() - ticket.getInTime().getTime();</span>
       
-<span class="fc" id="L27">        double duration = TimeUnit.MILLISECONDS.toHours(diff) ;</span>
+<span class="fc" id="L31">        double duration = TimeUnit.MILLISECONDS.toHours(diff) ;</span>
         
         /* 2 decimal apres la virgule*/
-<span class="fc" id="L30">        NumberFormat nf = NumberFormat.getInstance();</span>
-<span class="fc" id="L31">        nf.setMaximumFractionDigits(2);</span>
+<span class="fc" id="L34">        NumberFormat nf = NumberFormat.getInstance();</span>
+<span class="fc" id="L35">        nf.setMaximumFractionDigits(2);</span>
+        
         
         /**
          * @author j.de-la-osa
          * @return  si le temps est moins de 1 heure, on le correspond en minute
          * @param duration
          */
-<span class="fc bfc" id="L38" title="All 2 branches covered.">        if (duration &lt; 1.1) {</span>
-<span class="fc" id="L39">              duration = (double) ((diff / (1000*60)) % 60) /60;</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">        if (duration &lt; 1.1) {</span>
+<span class="fc" id="L44">              duration = (double) ((diff / (1000*60)) % 60) /60;</span>
              
         }
         
-<span class="fc bfc" id="L43" title="All 2 branches covered.">        if (ticket.getParkingSpot().getParkingType() == null) {</span>
-<span class="fc" id="L44">			throw new NullPointerException(&quot;forget type of vehicul&quot;);</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">        if (ticket.getParkingSpot().getParkingType() == null) {</span>
+<span class="fc" id="L49">			throw new NullPointerException(&quot;forget type of vehicul&quot;);</span>
 		}
         
-<span class="fc bfc" id="L47" title="All 2 branches covered.">        if (duration &lt; 0.30) {</span>
-<span class="fc" id="L48">        	freeFor30minuts(duration, ticket);</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">        if (duration &lt; 0.30) {</span>
+<span class="fc" id="L53">        	freeFor30minuts(duration, ticket);</span>
 		} else {
-<span class="pc bpc" id="L50" title="1 of 3 branches missed.">			switch (ticket.getParkingSpot().getParkingType()){  </span>
+<span class="pc bpc" id="L55" title="1 of 3 branches missed.">			switch (ticket.getParkingSpot().getParkingType()){  </span>
             case CAR: {
-<span class="fc" id="L52">                ticket.setPrice( (duration - 0.30)   * Fare.CAR_RATE_PER_HOUR);</span>
-<span class="fc" id="L53">                break;</span>
+<span class="fc" id="L57">                ticket.setPrice( (duration - 0.30)   * Fare.CAR_RATE_PER_HOUR - (((duration - 0.30)   * Fare.CAR_RATE_PER_HOUR ) * clientIsExist (ticket)  / 100));</span>
+<span class="fc" id="L58">                break;</span>
             }
             case BIKE: {
-<span class="fc" id="L56">                ticket.setPrice((duration - 0.30)  * Fare.BIKE_RATE_PER_HOUR);</span>
-<span class="fc" id="L57">                break;</span>
+<span class="fc" id="L61">                ticket.setPrice((duration - 0.30)  * Fare.BIKE_RATE_PER_HOUR - (((duration - 0.30)   * Fare.BIKE_RATE_PER_HOUR ) * clientIsExist (ticket)  / 100));</span>
+<span class="fc" id="L62">                break;</span>
             }
-<span class="nc" id="L59">            default: throw new IllegalArgumentException(&quot;Unkown Parking Type&quot;);</span>
+<span class="nc" id="L64">            default: throw new IllegalArgumentException(&quot;Unkown Parking Type&quot;);</span>
         }
 		}
         
 
         
-<span class="fc" id="L65">    }</span>
+<span class="fc" id="L70">    }</span>
     
     private void freeFor30minuts(double duration, Ticket ticket) {
   
-<span class="pc bpc" id="L69" title="1 of 3 branches missed.">    	switch (ticket.getParkingSpot().getParkingType()){  </span>
+<span class="pc bpc" id="L74" title="1 of 3 branches missed.">    	switch (ticket.getParkingSpot().getParkingType()){  </span>
         case CAR: {
-<span class="fc" id="L71">            ticket.setPrice( 0 );</span>
-<span class="fc" id="L72">            break;</span>
+<span class="fc" id="L76">            ticket.setPrice( 0 );</span>
+<span class="fc" id="L77">            break;</span>
         }
         case BIKE: {
-<span class="fc" id="L75">            ticket.setPrice(0);</span>
-<span class="fc" id="L76">            break;</span>
+<span class="fc" id="L80">            ticket.setPrice(0);</span>
+<span class="fc" id="L81">            break;</span>
         }
-<span class="nc" id="L78">        default: throw new IllegalArgumentException(&quot;Unkown Parking Type&quot;);</span>
+<span class="nc" id="L83">        default: throw new IllegalArgumentException(&quot;Unkown Parking Type&quot;);</span>
     }
-<span class="fc" id="L80">    }</span>
+<span class="fc" id="L85">    }</span>
+    
+    /**
+     * 
+     * @author j.de-la-osa
+     * @param ticket
+     * @return une reduction si l utilisateur existe dans la base de donnee
+     */
+    private int clientIsExist(Ticket ticket) {
+<span class="fc" id="L94">    	int reduction = 0;</span>
+<span class="pc bpc" id="L95" title="1 of 2 branches missed.">    	if (ticketDAO.getTicket(ticket.getVehicleRegNumber()) != null) {</span>
+<span class="nc" id="L96">    		 reduction = 5;</span>
+		} else {
+<span class="fc" id="L98">			 reduction = 0;</span>
+		}
+<span class="fc" id="L100">    	return reduction;	</span>
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

@@ -68,7 +68,6 @@ public class ParkingService {
             if(parkingNumber > 0){
                 parkingSpot = new ParkingSpot(parkingNumber,parkingType, true);
             }else{
-            	
                 throw new Exception("Error fetching parking number from DB. Parking slots might be full");
             }
         }catch(IllegalArgumentException ie){
@@ -79,7 +78,6 @@ public class ParkingService {
         return parkingSpot;
     }
 
-    
     private ParkingType getVehichleType(){
         System.out.println("Please select vehicle type from menu");
         System.out.println("1 CAR");

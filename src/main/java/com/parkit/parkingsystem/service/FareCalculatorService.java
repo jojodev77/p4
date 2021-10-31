@@ -6,11 +6,15 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang.NullArgumentException;
 
 import com.parkit.parkingsystem.constants.Fare;
+import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.model.Ticket;
 
 public class FareCalculatorService {
+	
+	 TicketDAO ticketDAO = new TicketDAO();
 
     public void calculateFare(Ticket ticket){
+    
         if( (ticket.getOutTime() == null ) || ticket.getInTime() == null || (ticket.getOutTime().before(ticket.getInTime())) ){
             throw new IllegalArgumentException("Out time provided is incorrect:"+ticket.getOutTime().toString());
         }
@@ -29,6 +33,7 @@ public class FareCalculatorService {
         /* 2 decimal apres la virgule*/
         NumberFormat nf = NumberFormat.getInstance();
         nf.setMaximumFractionDigits(2);
+        
         
         /**
          * @author j.de-la-osa
@@ -49,11 +54,11 @@ public class FareCalculatorService {
 		} else {
 			switch (ticket.getParkingSpot().getParkingType()){  
             case CAR: {
-                ticket.setPrice( (duration - 0.30)   * Fare.CAR_RATE_PER_HOUR);
+                ticket.setPrice( (duration - 0.30)   * Fare.CAR_RATE_PER_HOUR - (((duration - 0.30)   * Fare.CAR_RATE_PER_HOUR ) * clientIsExist (ticket)  / 100));
                 break;
             }
             case BIKE: {
-                ticket.setPrice((duration - 0.30)  * Fare.BIKE_RATE_PER_HOUR);
+                ticket.setPrice((duration - 0.30)  * Fare.BIKE_RATE_PER_HOUR - (((duration - 0.30)   * Fare.BIKE_RATE_PER_HOUR ) * clientIsExist (ticket)  / 100));
                 break;
             }
             default: throw new IllegalArgumentException("Unkown Parking Type");
@@ -77,5 +82,21 @@ public class FareCalculatorService {
         }
         default: throw new IllegalArgumentException("Unkown Parking Type");
     }
+    }
+    
+    /**
+     * 
+     * @author j.de-la-osa
+     * @param ticket
+     * @return une reduction si l utilisateur existe dans la base de donnee
+     */
+    private int clientIsExist(Ticket ticket) {
+    	int reduction = 0;
+    	if (ticketDAO.getTicket(ticket.getVehicleRegNumber()) != null) {
+    		 reduction = 5;
+		} else {
+			 reduction = 0;
+		}
+    	return reduction;	
     }
 }

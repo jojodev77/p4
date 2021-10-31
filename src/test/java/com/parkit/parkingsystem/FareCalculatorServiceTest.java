@@ -110,6 +110,8 @@ public class FareCalculatorServiceTest {
         fareCalculatorService.calculateFare(ticket);
         assertEquals( ((0.75 - 0.30) * Fare.CAR_RATE_PER_HOUR) , ticket.getPrice());
     }
+    
+    
 
     @Test
     public void calculateFareCarWithMoreThanADayParkingTime(){
