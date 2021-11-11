@@ -7,6 +7,9 @@ import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,7 +42,7 @@ public class ParkingServiceTest {
     private static TicketDAO ticketDAO;
     
    
-    
+    private static final Logger logger = LogManager.getLogger("ParkingService");
     
     
 
@@ -67,6 +70,19 @@ public class ParkingServiceTest {
         parkingService.processExitingVehicle();
         verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
     }
+    
+    @Test
+    public void processIncomingVehicleTestException() throws Exception {
+
+    	   // calling method under test
+    	   try {
+    			 ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
+    	   } catch(Exception e) {
+    		   logger.error("Unable to process incoming vehicle",e);
+    		   assertEquals("Unable to process incoming vehicle", e.getMessage());
+    	   }
+    }
+    
     
     @Test
     public void getNextParkingNumberIfAvailableOfCarTest() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
@@ -109,7 +125,7 @@ public class ParkingServiceTest {
    	 	assertEquals(true, ticketDAO.saveTicket(ticket));
     }
     
-    
+
     
     
 
