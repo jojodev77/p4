@@ -9,6 +9,12 @@ import com.parkit.parkingsystem.constants.Fare;
 import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.model.Ticket;
 
+/**
+ * 
+ * @author j.de-la-osa
+ * @Description service calcul of count for the client
+ *
+ */
 public class FareCalculatorService {
 	
 	 TicketDAO ticketDAO = new TicketDAO();
@@ -19,27 +25,17 @@ public class FareCalculatorService {
             throw new IllegalArgumentException("Out time provided is incorrect:"+ticket.getOutTime().toString());
         }
 
-        //TODO: Some tests are failing here. Need to check if this logic is correct
-        /**
-         * @author j.de-la-osa
-         * @return le temps facturé en heure
-         * @param ticket.getOutTime().getTime
-         * @param ticket.getInTime().getTime()
-         */
+     // return this time in hours
         long diff  = ticket.getOutTime().getTime() - ticket.getInTime().getTime();
       
         double duration = TimeUnit.MILLISECONDS.toHours(diff) ;
         
-        /* 2 decimal apres la virgule*/
+        // limit decimal to 2 number after decimal
         NumberFormat nf = NumberFormat.getInstance();
         nf.setMaximumFractionDigits(2);
         
         
-        /**
-         * @author j.de-la-osa
-         * @return  si le temps est moins de 1 heure, on le correspond en minute
-         * @param duration
-         */
+        // if time is more of 1 hours, this time converted to minutsc for the calcul
         if (duration < 1.1) {
               duration = (double) ((diff / (1000*60)) % 60) /60;
              
@@ -49,9 +45,11 @@ public class FareCalculatorService {
 			throw new NullPointerException("forget type of vehicul");
 		}
         
+        // for the free time for the client
         if (duration < 0.30) {
         	freeFor30minuts(duration, ticket);
 		} else {
+			// calcul to reduction with free 30 minuts and 5% for the client is present in database
 			switch (ticket.getParkingSpot().getParkingType()){  
             case CAR: {
                 ticket.setPrice( (duration - 0.30)   * Fare.CAR_RATE_PER_HOUR - (((duration - 0.30)   * Fare.CAR_RATE_PER_HOUR ) * clientIsExist (ticket)  / 100));
@@ -68,7 +66,12 @@ public class FareCalculatorService {
 
         
     }
-    
+    /**
+     * @author j.de-la-osa
+     * @param duration
+     * @param ticket
+     * @Description post free parking for the client
+     */
     private void freeFor30minuts(double duration, Ticket ticket) {
   
     	switch (ticket.getParkingSpot().getParkingType()){  
@@ -88,7 +91,7 @@ public class FareCalculatorService {
      * 
      * @author j.de-la-osa
      * @param ticket
-     * @return une reduction si l utilisateur existe dans la base de donnee
+     * @return 5% of count oh ticket if client exist in database
      */
     private int clientIsExist(Ticket ticket) {
     	int reduction = 0;
