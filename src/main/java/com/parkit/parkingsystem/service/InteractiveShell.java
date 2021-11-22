@@ -6,6 +6,12 @@ import com.parkit.parkingsystem.util.InputReaderUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * 
+ * @author j.de-la-osa
+ * @Description return action and information system for the  client
+ *
+ */
 public class InteractiveShell {
 
     private static final Logger logger = LogManager.getLogger("InteractiveShell");
@@ -23,6 +29,9 @@ public class InteractiveShell {
         while(continueApp){
             loadMenu();
             int option = inputReaderUtil.readSelection();
+            if (option == (Integer) null) {
+            	System.out.println("this result is not 1 or 2");
+			}
             switch(option){
                 case 1: {
                     parkingService.processIncomingVehicle();
@@ -42,6 +51,10 @@ public class InteractiveShell {
         }
     }
 
+    /**
+     * @author j.de-la-osa
+     * @description order of sequence of action for client
+     */
     private static void loadMenu(){
         System.out.println("Please select an option. Simply enter the number to choose an action");
         System.out.println("1 New Vehicle Entering - Allocate Parking Space");

@@ -26,7 +26,12 @@ public class ParkingService {
         this.parkingSpotDAO = parkingSpotDAO;
         this.ticketDAO = ticketDAO;
     }
-
+    
+    
+    /**
+     * @author j.de-la-osa
+     * @description process to entry parking for client
+     */
     public void processIncomingVehicle() {
         try{
             ParkingSpot parkingSpot = getNextParkingNumberIfAvailable();
@@ -52,6 +57,12 @@ public class ParkingService {
         }
     }
 
+    /**
+     * 
+     * @author j.de-la-osa
+     * @return immatriculation vehicul
+     * @throws Exception
+     */
     private String getVehichleRegNumber() throws Exception {
         System.out.println("Please type the vehicle registration number and press enter key");
         return inputReaderUtil.readVehicleRegistrationNumber();
@@ -95,6 +106,10 @@ public class ParkingService {
         }
     }
 
+    /**
+     * @author j.de-la-osa
+     * @description process exit parking to client
+     */
     public void processExitingVehicle() {
         try{
             String vehicleRegNumber = getVehichleRegNumber();
