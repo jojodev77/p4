@@ -68,6 +68,11 @@ public class ParkingService {
         return inputReaderUtil.readVehicleRegistrationNumber();
     }
 
+    /**
+     * 
+     * @author j.de-la-osa
+     * @return aviability of parkingspot
+     */
     public ParkingSpot getNextParkingNumberIfAvailable(){
         int parkingNumber=0;
         ParkingSpot parkingSpot = null;
@@ -87,6 +92,11 @@ public class ParkingService {
         return parkingSpot;
     }
 
+    /**
+     * 
+     * @author j.de-la-osa
+     * @return vehicule type 
+     */
     private ParkingType getVehichleType(){
         System.out.println("Please select vehicle type from menu");
         System.out.println("1 CAR");

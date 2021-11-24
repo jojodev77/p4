@@ -48,79 +48,133 @@ public class ParkingServiceTest {
 
     @BeforeEach
     private void setUpPerTest() {
+    	// GIVEN
         try {
             parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+            // WHEN
         } catch (Exception e) {
             e.printStackTrace();
+            // THEN
             throw  new RuntimeException("Failed to set up test mock objects");
         }
     }
 
+    /**
+     * 
+     * @author j.de-la-osa
+     * @throws Exception
+     * @description process for exit vehicule
+     */
     @Test
     public void processExitingVehicleTest() throws Exception{
+    	// GIVEN
     	 ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
     	 Ticket ticket = new Ticket();
          ticket.setInTime(new Date(System.currentTimeMillis() - (60*60*1000)));
          ticket.setParkingSpot(parkingSpot);
          ticket.setVehicleRegNumber("ABCDEF");
+         // WHEN
     	  when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
     	 when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
     	  when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
           when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
         parkingService.processExitingVehicle();
+        
+        // THEN
         verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
     }
     
+    /**
+     * 
+     * @author j.de-la-osa
+     * @throws Exception
+     * @description getException when process incoming vehicul is error
+     */
     @Test
     public void processIncomingVehicleTestException() throws Exception {
-
-    	   // calling method under test
+    		// GIVEN
     	   try {
+    		   // WHEN
     			 ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
     	   } catch(Exception e) {
+    		   // THEN
     		   logger.error("Unable to process incoming vehicle",e);
     		   assertEquals("Unable to process incoming vehicle", e.getMessage());
     	   }
     }
     
-    
+    /**
+     * 
+     * @author j.de-la-osa
+     * @throws Exception
+     * @description aviability parking spot of parking with a car
+     */
     @Test
     public void getNextParkingNumberIfAvailableOfCarTest() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-    	 when(inputReaderUtil.readSelection()).thenReturn(1);
+    	 // WHEN
+    	when(inputReaderUtil.readSelection()).thenReturn(1);
     	 when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(1);
+    	 // GIVER
     	 ParkingSpot parkingSpot =  parkingService.getNextParkingNumberIfAvailable();
+    	 
+    	 // THEN
     	  assertEquals(ParkingType.CAR, parkingSpot.getParkingType());
     }
     
-    
+    /**
+     * 
+     * @author j.de-la-osa
+     * @throws Exception
+     * @description aviability parking spot of parking with a bike
+     */
     @Test
     public void getNextParkingNumberIfAvailableOfBikeTest() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-    	 when(inputReaderUtil.readSelection()).thenReturn(2);
+    	 // WHEN
+    	when(inputReaderUtil.readSelection()).thenReturn(2);
     	 when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(2);
+    	 // GIVEN
     	 ParkingSpot parkingSpot =  parkingService.getNextParkingNumberIfAvailable();
+    	 // THEN
     	  assertEquals(ParkingType.BIKE, parkingSpot.getParkingType());
     }
-    
+    /**
+     * 
+     * @author j.de-la-osa
+     * @throws Exception
+     * @description get exception whien aviabilityparking sport is a error
+     */
     @Test
     public void getNextParkingNumberIfAvailableOfIllegalArgumentException()  {
+    	// GIVEN
     	ParkingType parkingType = null;
+    	 // WHEN
     	 when(inputReaderUtil.readSelection()).thenReturn(1);
     	 when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))) .thenThrow(IllegalArgumentException.class); 
+    	 
+    	 // THEN
     	 parkingService.getNextParkingNumberIfAvailable();
     }
     
-      
+    /**
+     * 
+     * @author j.de-la-osa
+     * @throws Exception
+     * @description process incoming vehicule with a car     */
     @Test
     public void processIncomingVehicleTest() throws Exception {
+    	// GIVEN
     	 ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
     	 Ticket ticket = new Ticket();
          ticket.setInTime(new Date(System.currentTimeMillis() - (60*60*1000)));
          ticket.setParkingSpot(parkingSpot);
          ticket.setVehicleRegNumber("ABCDEF");
+         // WHEN
     	when(inputReaderUtil.readSelection()).thenReturn(1);
    	 	when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(1);
    	 	//when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
    	 	when(ticketDAO.saveTicket(ticket)).thenReturn(true);
+   	 	
+   	 	// THEN
    	 	parkingService.processIncomingVehicle();
    	 	assertEquals(true, ticketDAO.saveTicket(ticket));
     }
