@@ -29,9 +29,9 @@ public class InteractiveShell {
         while(continueApp){
             loadMenu();
             int option = inputReaderUtil.readSelection();
-            if (option == (Integer) null) {
-            	System.out.println("this result is not 1 or 2");
-			}
+//            if (option == (Integer) null) {
+//            	System.out.println("this result is not 1 or 2");
+//			}
             switch(option){
                 case 1: {
                     parkingService.processIncomingVehicle();
