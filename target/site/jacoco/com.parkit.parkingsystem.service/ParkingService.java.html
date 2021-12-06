@@ -35,7 +35,7 @@ public class ParkingService {
     public void processIncomingVehicle() {
         try{
 <span class="fc" id="L37">            ParkingSpot parkingSpot = getNextParkingNumberIfAvailable();</span>
-<span class="pc bpc" id="L38" title="2 of 4 branches missed.">            if(parkingSpot !=null &amp;&amp; parkingSpot.getId() &gt; 0){</span>
+<span class="pc bpc" id="L38" title="1 of 4 branches missed.">            if(parkingSpot !=null &amp;&amp; parkingSpot.getId() &gt; 0){</span>
 <span class="fc" id="L39">                String vehicleRegNumber = getVehichleRegNumber();</span>
 <span class="fc" id="L40">                parkingSpot.setAvailable(false);</span>
 <span class="fc" id="L41">                parkingSpotDAO.updateParking(parkingSpot);//allot this parking space and mark it's availability as false</span>
@@ -54,7 +54,7 @@ public class ParkingService {
             }
 <span class="fc" id="L55">        }catch(Exception e){</span>
 <span class="fc" id="L56">            logger.error(&quot;Unable to process incoming vehicle&quot;,e);</span>
-<span class="nc" id="L57">        }</span>
+<span class="fc" id="L57">        }</span>
 <span class="fc" id="L58">    }</span>
 
     /**
@@ -86,8 +86,8 @@ public class ParkingService {
             }
 <span class="fc" id="L87">        }catch(IllegalArgumentException ie){</span>
 <span class="fc" id="L88">            logger.error(&quot;Error parsing user input for type of vehicle&quot;, ie);</span>
-<span class="nc" id="L89">        }catch(Exception e){</span>
-<span class="nc" id="L90">            logger.error(&quot;Error fetching next available parking slot&quot;, e);</span>
+<span class="fc" id="L89">        }catch(Exception e){</span>
+<span class="fc" id="L90">            logger.error(&quot;Error fetching next available parking slot&quot;, e);</span>
 <span class="fc" id="L91">        }</span>
 <span class="fc" id="L92">        return parkingSpot;</span>
     }
@@ -136,8 +136,8 @@ public class ParkingService {
 <span class="fc" id="L136">            }else{</span>
 <span class="nc" id="L137">                System.out.println(&quot;Unable to update ticket information. Error occurred&quot;);</span>
             }
-<span class="nc" id="L139">        }catch(Exception e){</span>
-<span class="nc" id="L140">            logger.error(&quot;Unable to process exiting vehicle&quot;,e);</span>
+<span class="fc" id="L139">        }catch(Exception e){</span>
+<span class="fc" id="L140">            logger.error(&quot;Unable to process exiting vehicle&quot;,e);</span>
 <span class="fc" id="L141">        }</span>
 <span class="fc" id="L142">    }</span>
 }
