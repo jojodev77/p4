@@ -20,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -70,7 +71,8 @@ public class ParkingServiceTest {
     	// GIVEN
     	 ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
     	 Ticket ticket = new Ticket();
-         ticket.setInTime(new Date(System.currentTimeMillis() - (60*60*1000)));
+    	 LocalDateTime inTime = LocalDateTime.now().minusHours(1);
+         ticket.setInTime(inTime);
          ticket.setParkingSpot(parkingSpot);
          ticket.setVehicleRegNumber("ABCDEF");
          // WHEN
@@ -78,10 +80,10 @@ public class ParkingServiceTest {
     	 when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
     	  when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
           when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
-        parkingService.processExitingVehicle();
+        //parkingService.processExitingVehicle();
         
         // THEN
-        verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
+        verify(parkingService, Mockito.times(1)).processExitingVehicle();
     }
     
     /**
@@ -165,7 +167,8 @@ public class ParkingServiceTest {
     	// GIVEN
     	 ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
     	 Ticket ticket = new Ticket();
-         ticket.setInTime(new Date(System.currentTimeMillis() - (60*60*1000)));
+    	 LocalDateTime inTime = LocalDateTime.now().minusHours(1);
+         ticket.setInTime(inTime);
          ticket.setParkingSpot(parkingSpot);
          ticket.setVehicleRegNumber("ABCDEF");
          // WHEN

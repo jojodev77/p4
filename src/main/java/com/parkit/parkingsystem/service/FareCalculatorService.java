@@ -1,6 +1,7 @@
 package com.parkit.parkingsystem.service;
 
 import java.text.NumberFormat;
+import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.NullArgumentException;
@@ -21,42 +22,41 @@ public class FareCalculatorService {
 
     public void calculateFare(Ticket ticket){
     
-        if( (ticket.getOutTime() == null ) || ticket.getInTime() == null || (ticket.getOutTime().before(ticket.getInTime())) ){
+        if( (ticket.getOutTime() == null ) || ticket.getInTime() == null ){
             throw new IllegalArgumentException("Out time provided is incorrect:"+ticket.getOutTime().toString());
         }
+      
 
      // return this time in hours
-        long diff  = ticket.getOutTime().getTime() - ticket.getInTime().getTime();
+        
+        long duration  = ChronoUnit.MINUTES.between(ticket.getInTime(), ticket.getOutTime());
+        System.out.println("mili---------------------------fff" + duration);
+
       
-        double duration = TimeUnit.MILLISECONDS.toHours(diff) ;
+       // double duration = TimeUnit.MILLISECONDS.toHours(diff) ;
         
         // limit decimal to 2 number after decimal
         NumberFormat nf = NumberFormat.getInstance();
         nf.setMaximumFractionDigits(2);
         
-        
-        // if time is more of 1 hours, this time converted to minutsc for the calcul
-        if (duration < 1.1) {
-              duration = (double) ((diff / (1000*60)) % 60) /60;
-             
-        }
+
         
         if (ticket.getParkingSpot().getParkingType() == null) {
 			throw new NullPointerException("forget type of vehicul");
 		}
         
         // for the free time for the client
-        if (duration < 0.30) {
+        if (duration < 30) {
         	freeFor30minuts(duration, ticket);
 		} else {
 			// calcul to reduction with free 30 minuts and 5% for the client is present in database
 			switch (ticket.getParkingSpot().getParkingType()){  
             case CAR: {
-                ticket.setPrice( (duration - 0.30)   * Fare.CAR_RATE_PER_HOUR - (((duration - 0.30)   * Fare.CAR_RATE_PER_HOUR ) * clientIsExist (ticket)  / 100));
+                ticket.setPrice( (duration - 30)   * Fare.CAR_RATE_PER_HOUR - (((duration - 30)   * Fare.CAR_RATE_PER_HOUR ) * clientIsExist (ticket)  / 100));
                 break;
             }
             case BIKE: {
-                ticket.setPrice((duration - 0.30)  * Fare.BIKE_RATE_PER_HOUR - (((duration - 0.30)   * Fare.BIKE_RATE_PER_HOUR ) * clientIsExist (ticket)  / 100));
+                ticket.setPrice((duration - 30)  * Fare.BIKE_RATE_PER_HOUR - (((duration - 30)   * Fare.BIKE_RATE_PER_HOUR ) * clientIsExist (ticket)  / 100));
                 break;
             }
             default: throw new IllegalArgumentException("Unkown Parking Type");

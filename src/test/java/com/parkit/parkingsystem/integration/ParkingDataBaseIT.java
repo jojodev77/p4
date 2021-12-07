@@ -24,6 +24,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @ExtendWith(MockitoExtension.class)
@@ -74,7 +75,8 @@ public class ParkingDataBaseIT {
 	public void testParkingACar() throws Exception {
 		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, true);
 		Ticket ticket = new Ticket();
-		ticket.setInTime(new Date(System.currentTimeMillis() - (60 * 60 * 1000)));
+		LocalDateTime inTime = LocalDateTime.now().minusHours(1);
+		ticket.setInTime(inTime);
 		ticket.setParkingSpot(parkingSpot);
 		ticket.setVehicleRegNumber("TTTTTT");
 		when(inputReaderUtil.readSelection()).thenReturn(1);
@@ -93,7 +95,7 @@ public class ParkingDataBaseIT {
 	public void testParkingLotExit() throws Exception {
 		testParkingACar();
 		Ticket ticket = new Ticket();
-		Date outTime = new Date();
+	     LocalDateTime outTime = LocalDateTime.now();
 		ticket = ticketDAO.getTicket("TTTTTT");
 		ticket.setOutTime(outTime);
 		ticket.setParkingSpot(ticket.getParkingSpot());
