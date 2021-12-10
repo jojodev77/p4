@@ -61,8 +61,6 @@ public class ParkingDataBaseIT {
 
 	@BeforeEach
 	private void setUpPerTest() throws Exception {
-//		when(inputReaderUtil.readSelection()).thenReturn(1);
-//		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("TTTTTT");
 		dataBasePrepareService.clearDataBaseEntries();
 	}
 
@@ -76,15 +74,17 @@ public class ParkingDataBaseIT {
 		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, true);
 		Ticket ticket = new Ticket();
 		LocalDateTime inTime = LocalDateTime.now().minusHours(1);
+		LocalDateTime ouTime = LocalDateTime.now();
 		ticket.setInTime(inTime);
+		ticket.setOutTime(ouTime);
 		ticket.setParkingSpot(parkingSpot);
-		ticket.setVehicleRegNumber("TTTTTT");
+		ticket.setVehicleRegNumber("AAA");
 		when(inputReaderUtil.readSelection()).thenReturn(1);
 		parkingSpotDAO.dataBaseConfig = dataBaseTestConfig;
 		parkingSpotDAO.getNextAvailableSlot(parkingSpot.getParkingType());
 		ticketDAO.saveTicket(ticket);
 		parkingService.processIncomingVehicle();
-		String t = ticketDAO.getTicket("TTTTTT").getVehicleRegNumber();
+		String t = ticketDAO.getTicket("AAA").getVehicleRegNumber();
 		assertEquals(t, ticket.getVehicleRegNumber());
 
 		// TODO: check that a ticket is actualy saved in DB and Parking table is updated
@@ -96,10 +96,10 @@ public class ParkingDataBaseIT {
 		testParkingACar();
 		Ticket ticket = new Ticket();
 	     LocalDateTime outTime = LocalDateTime.now();
-		ticket = ticketDAO.getTicket("TTTTTT");
+		ticket = ticketDAO.getTicket("AAA");
 		ticket.setOutTime(outTime);
 		ticket.setParkingSpot(ticket.getParkingSpot());
-		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("TTTTTT");
+		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("AAA");
 		parkingSpotDAO.getNextAvailableSlot(ticket.getParkingSpot().getParkingType());
 		parkingSpotDAO.updateParking(ticket.getParkingSpot());
 		parkingService.processExitingVehicle();

@@ -30,10 +30,13 @@ public class TicketDAO {
             ps.setString(2, ticket.getVehicleRegNumber());
             ps.setDouble(3, ticket.getPrice());
             ps.setTimestamp(4, Timestamp.valueOf((ticket.getInTime())));
-            ps.setTimestamp(5, (ticket.getOutTime() == null)?null: Timestamp.valueOf((ticket.getOutTime())) );
+            if (ticket.getInTime() != null) {
+                System.out.println("--------->" +Timestamp.valueOf((ticket.getOutTime())));
+            	   ps.setTimestamp(5, (Timestamp.valueOf((ticket.getOutTime()))));
+			}
             return ps.execute();
         }catch (Exception ex){
-            logger.error("Error fetching next available slot",ex);
+            logger.error("[error function saveTicket]Error fetching next available slot",ex);
         }finally {
             dataBaseConfig.closeConnection(con);
             return false;
@@ -41,28 +44,34 @@ public class TicketDAO {
     }
 
     public Ticket getTicket(String vehicleRegNumber) {
+    	
         Connection con = null;
         Ticket ticket = null;
         try {
             con = dataBaseConfig.getConnection();
+            if (con == null) {
+				System.out.println("-----------------> ERRRRRORRR CONNECTINO" );
+			}
             PreparedStatement ps = con.prepareStatement(DBConstants.GET_TICKET);
             //ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
             ps.setString(1,vehicleRegNumber);
             ResultSet rs = ps.executeQuery();
             if(rs.next()){
                 ticket = new Ticket();
+              	System.out.println("-----------------> " +  ParkingType.valueOf(rs.getString(6)));
                 ParkingSpot parkingSpot = new ParkingSpot(rs.getInt(1), ParkingType.valueOf(rs.getString(6)),false);
                 ticket.setParkingSpot(parkingSpot);
                 ticket.setId(rs.getInt(2));
                 ticket.setVehicleRegNumber(vehicleRegNumber);
                 ticket.setPrice(rs.getDouble(3));
-                ticket.setInTime(  rs.getTimestamp(4).toLocalDateTime());
+                ticket.setInTime(rs.getTimestamp(4).toLocalDateTime());
                 ticket.setOutTime(rs.getTimestamp(5).toLocalDateTime());
             }
             dataBaseConfig.closeResultSet(rs);
             dataBaseConfig.closePreparedStatement(ps);
         }catch (Exception ex){
-            logger.error("Error fetching next available slot",ex);
+        	  
+            logger.error("[error function getTicket]Error fetching next available slot",ex);
         }finally {
             dataBaseConfig.closeConnection(con);
             return ticket;

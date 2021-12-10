@@ -29,38 +29,35 @@ import org.apache.logging.log4j.Logger;
 <span class="nc bnc" id="L29" title="All 2 branches missed.">        while(continueApp){</span>
 <span class="nc" id="L30">            loadMenu();</span>
 <span class="nc" id="L31">            int option = inputReaderUtil.readSelection();</span>
-//            if (option == (Integer) null) {
-//            	System.out.println(&quot;this result is not 1 or 2&quot;);
-//			}
-<span class="nc bnc" id="L35" title="All 4 branches missed.">            switch(option){</span>
+<span class="nc bnc" id="L32" title="All 4 branches missed.">            switch(option){</span>
                 case 1: {
-<span class="nc" id="L37">                    parkingService.processIncomingVehicle();</span>
-<span class="nc" id="L38">                    break;</span>
+<span class="nc" id="L34">                    parkingService.processIncomingVehicle();</span>
+<span class="nc" id="L35">                    break;</span>
                 }
                 case 2: {
-<span class="nc" id="L41">                    parkingService.processExitingVehicle();</span>
-<span class="nc" id="L42">                    break;</span>
+<span class="nc" id="L38">                    parkingService.processExitingVehicle();</span>
+<span class="nc" id="L39">                    break;</span>
                 }
                 case 3: {
-<span class="nc" id="L45">                    System.out.println(&quot;Exiting from the system!&quot;);</span>
-<span class="nc" id="L46">                    continueApp = false;</span>
-<span class="nc" id="L47">                    break;</span>
+<span class="nc" id="L42">                    System.out.println(&quot;Exiting from the system!&quot;);</span>
+<span class="nc" id="L43">                    continueApp = false;</span>
+<span class="nc" id="L44">                    break;</span>
                 }
-<span class="nc" id="L49">                default: System.out.println(&quot;Unsupported option. Please enter a number corresponding to the provided menu&quot;);</span>
+<span class="nc" id="L46">                default: System.out.println(&quot;Unsupported option. Please enter a number corresponding to the provided menu&quot;);</span>
             }
-<span class="nc" id="L51">        }</span>
-<span class="nc" id="L52">    }</span>
+<span class="nc" id="L48">        }</span>
+<span class="nc" id="L49">    }</span>
 
     /**
      * @author j.de-la-osa
      * @description order of sequence of action for client
      */
     private static void loadMenu(){
-<span class="nc" id="L59">        System.out.println(&quot;Please select an option. Simply enter the number to choose an action&quot;);</span>
-<span class="nc" id="L60">        System.out.println(&quot;1 New Vehicle Entering - Allocate Parking Space&quot;);</span>
-<span class="nc" id="L61">        System.out.println(&quot;2 Vehicle Exiting - Generate Ticket Price&quot;);</span>
-<span class="nc" id="L62">        System.out.println(&quot;3 Shutdown System&quot;);</span>
-<span class="nc" id="L63">    }</span>
+<span class="nc" id="L56">        System.out.println(&quot;Please select an option. Simply enter the number to choose an action&quot;);</span>
+<span class="nc" id="L57">        System.out.println(&quot;1 New Vehicle Entering - Allocate Parking Space&quot;);</span>
+<span class="nc" id="L58">        System.out.println(&quot;2 Vehicle Exiting - Generate Ticket Price&quot;);</span>
+<span class="nc" id="L59">        System.out.println(&quot;3 Shutdown System&quot;);</span>
+<span class="nc" id="L60">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

@@ -49,7 +49,7 @@ public class Ticket {
         return inTime;
     }
 
-    public void setInTime(LocalDateTime  inTime) {
+    public void setInTime(LocalDateTime inTime) {
         this.inTime = inTime;
     }
 
@@ -57,7 +57,7 @@ public class Ticket {
         return outTime;
     }
 
-    public void setOutTime(LocalDateTime  outTime) {
+    public void setOutTime(LocalDateTime outTime) {
         this.outTime = outTime;
     }
 }

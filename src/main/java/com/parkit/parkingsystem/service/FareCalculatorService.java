@@ -25,12 +25,13 @@ public class FareCalculatorService {
         if( (ticket.getOutTime() == null ) || ticket.getInTime() == null ){
             throw new IllegalArgumentException("Out time provided is incorrect:"+ticket.getOutTime().toString());
         }
-      
+        System.out.println("mili---------------------------fff" + ticket.getOutTime() + "fin" + ticket.getInTime());
 
      // return this time in hours
         
         long duration  = ChronoUnit.MINUTES.between(ticket.getInTime(), ticket.getOutTime());
-        System.out.println("mili---------------------------fff" + duration);
+        long TEST  = ChronoUnit.SECONDS.between(ticket.getInTime(), ticket.getOutTime());
+        
 
       
        // double duration = TimeUnit.MILLISECONDS.toHours(diff) ;

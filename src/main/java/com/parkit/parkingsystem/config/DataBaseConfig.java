@@ -19,9 +19,6 @@ public class DataBaseConfig {
         System.setProperty(driver,"");
 
         return DriverManager.getConnection(url,username,password );
-//        return DriverManager.getConnection("jdbc:mysql://localhost/?user=root&password=rootroot"+"?useUnicode=true" + 
-//        		"&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&" + 
-//        		"serverTimezone=UTC");
     }
 
     public void closeConnection(Connection con){

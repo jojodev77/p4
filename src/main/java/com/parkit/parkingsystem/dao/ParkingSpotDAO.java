@@ -26,11 +26,12 @@ public class ParkingSpotDAO {
             ResultSet rs = ps.executeQuery();
             if(rs.next()){
                 result = rs.getInt(1);
+                System.out.println("result ----->" + result);
             }
             dataBaseConfig.closeResultSet(rs);
             dataBaseConfig.closePreparedStatement(ps);
         }catch (Exception ex){
-            logger.error("Error fetching next available slot",ex);
+            logger.error("[error function getNextAvailableSlot]Error fetching next available slot",ex);
         }finally {
             dataBaseConfig.closeConnection(con);
         }
@@ -38,7 +39,7 @@ public class ParkingSpotDAO {
     }
 
     public boolean updateParking(ParkingSpot parkingSpot){
-        //update the availability fo that parking slot
+        //update the availability for that parking slot
         Connection con = null;
         try {
             con = dataBaseConfig.getConnection();

@@ -149,6 +149,7 @@
 						<exclude>**/*com/parkit/parkingsystem/App*/**</exclude>
 						<exclude>**/*com/parkit/parkingsystem/util*/**</exclude>
 						<exclude>**/*com/parkit/parkingsystem/model*/**</exclude>
+						<exclude>**/*com/parkit/parkingsystem/constants*/**</exclude>
 					</excludes>
 				</configuration>
 				<executions>
