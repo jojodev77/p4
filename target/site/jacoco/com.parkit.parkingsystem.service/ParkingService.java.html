@@ -38,8 +38,8 @@ public class ParkingService {
 <span class="pc bpc" id="L38" title="1 of 4 branches missed.">			if (parkingSpot != null &amp;&amp; parkingSpot.getId() &gt; 0) {</span>
 <span class="fc" id="L39">				String vehicleRegNumber = getVehichleRegNumber();</span>
 <span class="fc" id="L40">				parkingSpot.setAvailable(false);</span>
-<span class="fc" id="L41">				parkingSpotDAO.updateParking(parkingSpot);// allot this parking space and mark it's availability as</span>
-															// false
+<span class="fc" id="L41">				parkingSpotDAO.updateParking(parkingSpot);</span>
+				// allot this parking space and mark it's availability as false
 <span class="fc" id="L43">				LocalDateTime inTime = LocalDateTime.now();</span>
 <span class="fc" id="L44">				LocalDateTime ouTime = LocalDateTime.now();</span>
 <span class="fc" id="L45">				Ticket ticket = new Ticket();</span>

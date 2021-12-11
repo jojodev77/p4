@@ -56,8 +56,6 @@ public class ParkingServiceTest {
 			throw new RuntimeException("Failed to set up test mock objects");
 		}
 	}
-	
-	
 
 	/**
 	 * 
@@ -78,7 +76,7 @@ public class ParkingServiceTest {
 		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
 		when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
 		when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
-	//	when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
+		// when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
 		parkingService.processExitingVehicle();
 		// THEN
 		assertEquals(true, parkingSpotDAO.updateParking(ticket.getParkingSpot()));
