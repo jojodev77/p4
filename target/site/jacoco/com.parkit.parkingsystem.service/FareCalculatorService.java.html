@@ -30,41 +30,39 @@ import com.parkit.parkingsystem.model.Ticket;
 
 <span class="fc" id="L31">		long duration = ChronoUnit.MINUTES.between(ticket.getInTime(), ticket.getOutTime());</span>
 
-
 		// limit decimal to 2 number after decimal
-<span class="fc" id="L35">		NumberFormat nf = NumberFormat.getInstance();</span>
-<span class="fc" id="L36">		nf.setMaximumFractionDigits(2);</span>
-		
-
-<span class="fc bfc" id="L39" title="All 2 branches covered.">		if (ticket.getParkingSpot().getParkingType() == null) {</span>
-<span class="fc" id="L40">			throw new NullPointerException(&quot;forget type of vehicul&quot;);</span>
-		}
-
+		NumberFormat nf = NumberFormat.getInstance();
+<span class="fc" id="L35">		nf.setMaximumFractionDigits(2);</span>
+<span class="fc" id="L36"></span>
+		if (ticket.getParkingSpot().getParkingType() == null) {
+			throw new NullPointerException(&quot;forget type of vehicul&quot;);
+<span class="fc bfc" id="L39" title="All 2 branches covered.">		}</span>
+<span class="fc" id="L40"></span>
 		// for the free time for the client
-<span class="fc bfc" id="L44" title="All 2 branches covered.">		if (duration &lt; 30) {</span>
-<span class="fc" id="L45">			freeFor30minuts(duration, ticket);</span>
-		} else {
-			// calcul to reduction with free 30 minuts and 5% for the client is present in
+		if (duration &lt; 30) {
+			freeFor30minuts(duration, ticket);
+<span class="fc bfc" id="L44" title="All 2 branches covered.">		} else {</span>
+<span class="fc" id="L45">			// calcul to reduction with free 30 minuts and 5% for the client is present in</span>
 			// database
-<span class="pc bpc" id="L49" title="1 of 3 branches missed.">			switch (ticket.getParkingSpot().getParkingType()) {</span>
+			switch (ticket.getParkingSpot().getParkingType()) {
 			case CAR: {
-<span class="fc" id="L51">				ticket.setPrice((duration - 30) * Fare.CAR_RATE_PER_HOUR</span>
-<span class="fc" id="L52">						- (((duration - 30) * Fare.CAR_RATE_PER_HOUR) * clientIsExist(ticket) / 100));</span>
-<span class="fc" id="L53">				break;</span>
+<span class="pc bpc" id="L49" title="1 of 3 branches missed.">				ticket.setPrice((duration - 30) * Fare.CAR_RATE_PER_HOUR</span>
+						- (((duration - 30) * Fare.CAR_RATE_PER_HOUR) * clientIsExist(ticket) / 100));
+<span class="fc" id="L51">				break;</span>
+<span class="fc" id="L52">			}</span>
+<span class="fc" id="L53">			case BIKE: {</span>
+				ticket.setPrice((duration - 30) * Fare.BIKE_RATE_PER_HOUR
+						- (((duration - 30) * Fare.BIKE_RATE_PER_HOUR) * clientIsExist(ticket) / 100));
+<span class="fc" id="L56">				break;</span>
+<span class="fc" id="L57">			}</span>
+<span class="fc" id="L58">			default:</span>
+				throw new IllegalArgumentException(&quot;Unkown Parking Type&quot;);
 			}
-			case BIKE: {
-<span class="fc" id="L56">				ticket.setPrice((duration - 30) * Fare.BIKE_RATE_PER_HOUR</span>
-<span class="fc" id="L57">						- (((duration - 30) * Fare.BIKE_RATE_PER_HOUR) * clientIsExist(ticket) / 100));</span>
-<span class="fc" id="L58">				break;</span>
-			}
-			default:
-<span class="nc" id="L61">				throw new IllegalArgumentException(&quot;Unkown Parking Type&quot;);</span>
-			}
-		}
+<span class="nc" id="L61">		}</span>
 
-<span class="fc" id="L65">	}</span>
+	}
 
-	/**
+<span class="fc" id="L65">	/**</span>
 	 * @author j.de-la-osa
 	 * @param duration
 	 * @param ticket
@@ -72,34 +70,35 @@ import com.parkit.parkingsystem.model.Ticket;
 	 */
 	private void freeFor30minuts(double duration, Ticket ticket) {
 
-<span class="pc bpc" id="L75" title="1 of 3 branches missed.">		switch (ticket.getParkingSpot().getParkingType()) {</span>
+		switch (ticket.getParkingSpot().getParkingType()) {
 		case CAR: {
-<span class="fc" id="L77">			ticket.setPrice(0);</span>
-<span class="fc" id="L78">			break;</span>
+<span class="pc bpc" id="L75" title="1 of 3 branches missed.">			ticket.setPrice(0);</span>
+			break;
+<span class="fc" id="L77">		}</span>
+<span class="fc" id="L78">		case BIKE: {</span>
+			ticket.setPrice(0);
+			break;
+<span class="fc" id="L81">		}</span>
+<span class="fc" id="L82">		default:</span>
+			throw new IllegalArgumentException(&quot;Unkown Parking Type&quot;);
 		}
-		case BIKE: {
-<span class="fc" id="L81">			ticket.setPrice(0);</span>
-<span class="fc" id="L82">			break;</span>
-		}
-		default:
-<span class="nc" id="L85">			throw new IllegalArgumentException(&quot;Unkown Parking Type&quot;);</span>
-		}
-<span class="fc" id="L87">	}</span>
+<span class="nc" id="L85">	}</span>
 
-	/**
+<span class="fc" id="L87">	/**</span>
 	 * 
 	 * @author j.de-la-osa
 	 * @param ticket
 	 * @return 5% of count oh ticket if client exist in database
 	 */
 	private int clientIsExist(Ticket ticket) {
-<span class="fc" id="L96">		int reduction = 0;</span>
-<span class="pc bpc" id="L97" title="1 of 2 branches missed.">		if (ticketDAO.getTicket(ticket.getVehicleRegNumber()) != null) {</span>
-<span class="nc" id="L98">			reduction = 5;</span>
-		} else {
-<span class="fc" id="L100">			reduction = 0;</span>
-		}
-<span class="fc" id="L102">		return reduction;</span>
-	}
+		int reduction = 0;
+		if (ticketDAO.getTicket(ticket.getVehicleRegNumber()) != null
+<span class="fc" id="L96">				&amp;&amp; ticketDAO.getTicket(ticket.getVehicleRegNumber()).getOutTime() != null) {</span>
+<span class="pc bpc" id="L97" title="1 of 2 branches missed.">			reduction = 5;</span>
+<span class="nc" id="L98">		} else {</span>
+			reduction = 0;
+<span class="fc" id="L100">		}</span>
+		return reduction;
+<span class="fc" id="L102">	}</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

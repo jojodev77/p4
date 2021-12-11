@@ -1,5 +1,6 @@
 package com.parkit.parkingsystem.service;
 
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
@@ -31,8 +32,7 @@ public class FareCalculatorService {
 		long duration = ChronoUnit.MINUTES.between(ticket.getInTime(), ticket.getOutTime());
 
 		// limit decimal to 2 number after decimal
-		NumberFormat nf = NumberFormat.getInstance();
-		nf.setMaximumFractionDigits(2);
+		     DecimalFormat df = new DecimalFormat("0.00");
 
 		if (ticket.getParkingSpot().getParkingType() == null) {
 			throw new NullPointerException("forget type of vehicul");
@@ -46,13 +46,13 @@ public class FareCalculatorService {
 			// database
 			switch (ticket.getParkingSpot().getParkingType()) {
 			case CAR: {
-				ticket.setPrice((duration - 30) * Fare.CAR_RATE_PER_HOUR
-						- (((duration - 30) * Fare.CAR_RATE_PER_HOUR) * clientIsExist(ticket) / 100));
+				ticket.setPrice((duration  - 30) * 0.016667 * Fare.CAR_RATE_PER_HOUR
+						- (((duration - 30) * 0.016667 * Fare.CAR_RATE_PER_HOUR) * clientIsExist(ticket) / 100));
 				break;
 			}
 			case BIKE: {
-				ticket.setPrice((duration - 30) * Fare.BIKE_RATE_PER_HOUR
-						- (((duration - 30) * Fare.BIKE_RATE_PER_HOUR) * clientIsExist(ticket) / 100));
+				ticket.setPrice((duration - 30) * 0.016667 * Fare.BIKE_RATE_PER_HOUR
+						- (((duration - 30) * 0.016667 * Fare.BIKE_RATE_PER_HOUR) * clientIsExist(ticket) / 100));
 				break;
 			}
 			default:

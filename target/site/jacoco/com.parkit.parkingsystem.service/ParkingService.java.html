@@ -128,21 +128,20 @@ public class ParkingService {
 <span class="fc" id="L128">			String vehicleRegNumber = getVehichleRegNumber();</span>
 <span class="fc" id="L129">			Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);</span>
 <span class="fc" id="L130">			ticket.setOutTime(outTime);</span>
-<span class="fc" id="L131">			System.out.println(&quot;tikcet&quot; + ticket.getParkingSpot());</span>
-<span class="fc" id="L132">			fareCalculatorService.calculateFare(ticket);</span>
-<span class="pc bpc" id="L133" title="1 of 2 branches missed.">			if (ticketDAO.updateTicket(ticket)) {</span>
-<span class="nc" id="L134">				ParkingSpot parkingSpot = ticket.getParkingSpot();</span>
-<span class="nc" id="L135">				parkingSpot.setAvailable(true);</span>
-<span class="nc" id="L136">				parkingSpotDAO.updateParking(parkingSpot);</span>
-<span class="nc" id="L137">				System.out.println(&quot;Please pay the parking fare:&quot; + ticket.getPrice());</span>
-<span class="nc" id="L138">				System.out.println(</span>
-<span class="nc" id="L139">						&quot;Recorded out-time for vehicle number:&quot; + ticket.getVehicleRegNumber() + &quot; is:&quot; + outTime);</span>
-<span class="nc" id="L140">			} else {</span>
-<span class="fc" id="L141">				System.out.println(&quot;Unable to update ticket information. Error occurred&quot;);</span>
-			}
-<span class="fc" id="L143">		} catch (Exception e) {</span>
-<span class="fc" id="L144">			logger.error(&quot;Unable to process exiting vehicle&quot;, e);</span>
-<span class="fc" id="L145">		}</span>
-<span class="fc" id="L146">	}</span>
-}
+<span class="fc" id="L131">			fareCalculatorService.calculateFare(ticket);</span>
+<span class="fc" id="L132">			if (ticketDAO.updateTicket(ticket)) {</span>
+<span class="pc bpc" id="L133" title="1 of 2 branches missed.">				ParkingSpot parkingSpot = ticket.getParkingSpot();</span>
+<span class="nc" id="L134">				parkingSpot.setAvailable(true);</span>
+<span class="nc" id="L135">				parkingSpotDAO.updateParking(parkingSpot);</span>
+<span class="nc" id="L136">				System.out.println(&quot;Please pay the parking fare:&quot; + ticket.getPrice());</span>
+<span class="nc" id="L137">				System.out.println(</span>
+<span class="nc" id="L138">						&quot;Recorded out-time for vehicle number:&quot; + ticket.getVehicleRegNumber() + &quot; is:&quot; + outTime);</span>
+<span class="nc" id="L139">			} else {</span>
+<span class="nc" id="L140">				System.out.println(&quot;Unable to update ticket information. Error occurred&quot;);</span>
+<span class="fc" id="L141">			}</span>
+		} catch (Exception e) {
+<span class="fc" id="L143">			logger.error(&quot;Unable to process exiting vehicle&quot;, e);</span>
+<span class="fc" id="L144">		}</span>
+<span class="fc" id="L145">	}</span>
+<span class="fc" id="L146">}</span>
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
