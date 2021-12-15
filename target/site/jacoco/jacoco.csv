@@ -1,7 +1,0 @@
-GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
-parking-system,com.parkit.parkingsystem.service,ParkingService,84,183,4,7,14,58,4,9,0,7
-parking-system,com.parkit.parkingsystem.service,InteractiveShell,72,0,6,0,28,0,8,0,4,0
-parking-system,com.parkit.parkingsystem.service,FareCalculatorService,13,141,4,12,3,29,4,9,0,4
-parking-system,com.parkit.parkingsystem.dao,ParkingSpotDAO,15,92,2,2,5,24,2,4,0,4
-parking-system,com.parkit.parkingsystem.dao,TicketDAO,72,180,2,4,15,39,3,5,1,4
-parking-system,com.parkit.parkingsystem.config,DataBaseConfig,15,57,3,3,6,25,3,6,0,6

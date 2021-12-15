@@ -14,11 +14,9 @@ public class DataBaseTestConfig extends DataBaseConfig {
         logger.info("Create DB connection");
         Class.forName("com.mysql.cj.jdbc.Driver");
         String driver = "com.mysql.cj.jdbc.Driver";
-     //   String url    = "jdbc:mysql://localhost:3306/test?zeroDateTimeBehavior=CONVERT_TO_NULL&serverTimezone=UTC";
         String url    = "jdbc:mysql://localhost:3306/test?useSSL=false&serverTimezone=UTC";
         String username = "root";
         String password = "";
-        String hourUTC ="?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&\"serverTimezone=UTC";
         System.setProperty(driver,"");
         
 

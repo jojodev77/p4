@@ -2,14 +2,18 @@ package com.parkit.parkingsystem;
 
 import com.parkit.parkingsystem.constants.Fare;
 import com.parkit.parkingsystem.constants.ParkingType;
+import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.FareCalculatorService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -17,6 +21,9 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class FareCalculatorServiceTest {
+	
+	@Mock
+	TicketDAO ticketDAO;
 
 	private static FareCalculatorService fareCalculatorService;
 	private Ticket ticket;
@@ -30,6 +37,8 @@ public class FareCalculatorServiceTest {
 	private void setUpPerTest() {
 		ticket = new Ticket();
 	}
+	
+
 
 	/**
 	 * 
@@ -127,7 +136,7 @@ public class FareCalculatorServiceTest {
 		// WHEN
 		fareCalculatorService.calculateFare(ticket);
 		// THEN
-		assertEquals(((45 - 30) * Fare.BIKE_RATE_PER_HOUR), ticket.getPrice());
+		assertEquals(((45 - 30) * 0.016667 * Fare.BIKE_RATE_PER_HOUR), ticket.getPrice());
 	}
 
 	/**
@@ -148,7 +157,7 @@ public class FareCalculatorServiceTest {
 		// WHEN
 		fareCalculatorService.calculateFare(ticket);
 		// THEN
-		assertEquals(((45 - 30) * Fare.CAR_RATE_PER_HOUR), ticket.getPrice());
+		assertEquals(((45 - 30) * 0.016667 * Fare.CAR_RATE_PER_HOUR), ticket.getPrice());
 	}
 
 	/**
@@ -170,7 +179,7 @@ public class FareCalculatorServiceTest {
 		// WHEN
 		fareCalculatorService.calculateFare(ticket);
 		// THEN
-		assertEquals(((1440 - 30) * Fare.CAR_RATE_PER_HOUR), ticket.getPrice());
+		assertEquals(((1440 - 30) * 0.016667 * Fare.CAR_RATE_PER_HOUR), ticket.getPrice());
 	}
 
 	/**
@@ -213,6 +222,21 @@ public class FareCalculatorServiceTest {
 		fareCalculatorService.calculateFare(ticket);
 		// THEN
 		assertEquals(0, ticket.getPrice());
+	}
+	
+	public void calculateFareCarWithUserIsExist() {
+		// GIVEN
+		LocalDateTime inTime = LocalDateTime.now().minusMinutes(45);
+		LocalDateTime outTime = LocalDateTime.now();
+		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE, false);
+		ticket.setInTime(inTime);
+		ticket.setOutTime(outTime);
+		ticket.setParkingSpot(parkingSpot);
+		when(ticketDAO.getTicket(any(String.class))).thenReturn(ticket);
+		// WHEN
+		fareCalculatorService.calculateFare(ticket);
+		// THEN
+		assertEquals(((45 - 30) * 0.016667 * Fare.CAR_RATE_PER_HOUR * 5 / 100), ticket.getPrice());
 	}
 
 }
