@@ -19,7 +19,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -70,7 +72,7 @@ public class ParkingDataBaseIT {
 	}
 
 	@Test
-	public void testParkingACar() throws Exception {
+	public void entryParkingWithCarTest() throws Exception {
 		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, true);
 		Ticket ticket = new Ticket();
 		LocalDateTime inTime = LocalDateTime.now().minusHours(1);
@@ -92,10 +94,32 @@ public class ParkingDataBaseIT {
 	}
 
 	@Test
-	public void testParkingLotExit() throws Exception {
-		testParkingACar();
+	public void entryParkingWithBikeTest() throws Exception {
+		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE, true);
 		Ticket ticket = new Ticket();
-	     LocalDateTime outTime = LocalDateTime.now();
+		LocalDateTime inTime = LocalDateTime.now().minusHours(1);
+		LocalDateTime ouTime = LocalDateTime.now();
+		ticket.setInTime(inTime);
+		ticket.setOutTime(ouTime);
+		ticket.setParkingSpot(parkingSpot);
+		ticket.setVehicleRegNumber("AAA");
+		when(inputReaderUtil.readSelection()).thenReturn(1);
+		parkingSpotDAO.dataBaseConfig = dataBaseTestConfig;
+		parkingSpotDAO.getNextAvailableSlot(parkingSpot.getParkingType());
+		ticketDAO.saveTicket(ticket);
+		parkingService.processIncomingVehicle();
+		String t = ticketDAO.getTicket("AAA").getVehicleRegNumber();
+		assertEquals(t, ticket.getVehicleRegNumber());
+
+		// TODO: check that a ticket is actualy saved in DB and Parking table is updated
+		// with availability
+	}
+
+	@Test
+	public void startedParkingWithCarTest() throws Exception {
+		entryParkingWithCarTest();
+		Ticket ticket = new Ticket();
+		LocalDateTime outTime = LocalDateTime.now();
 		ticket = ticketDAO.getTicket("AAA");
 		ticket.setOutTime(outTime);
 		ticket.setParkingSpot(ticket.getParkingSpot());
@@ -104,6 +128,79 @@ public class ParkingDataBaseIT {
 		parkingSpotDAO.updateParking(ticket.getParkingSpot());
 		parkingService.processExitingVehicle();
 		assertEquals(outTime, ticket.getOutTime());
+		// TODO: check that the fare generated and out time are populated correctly in
+		// the database
+	}
+
+	@Test
+	public void startedParkingWithBikeTest() throws Exception {
+		entryParkingWithBikeTest();
+		Ticket ticket = new Ticket();
+		LocalDateTime outTime = LocalDateTime.now();
+		ticket = ticketDAO.getTicket("AAA");
+		ticket.setOutTime(outTime);
+		ticket.setParkingSpot(ticket.getParkingSpot());
+		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("AAA");
+		parkingSpotDAO.getNextAvailableSlot(ticket.getParkingSpot().getParkingType());
+		parkingSpotDAO.updateParking(ticket.getParkingSpot());
+		parkingService.processExitingVehicle();
+		assertEquals(outTime, ticket.getOutTime());
+		// TODO: check that the fare generated and out time are populated correctly in
+		// the database
+	}
+
+	@Test
+	public void ErrorEntryParkingWithCarBeacauseOutimeIsEmptyTest() throws Exception {
+		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, true);
+		Ticket ticket = new Ticket();
+		LocalDateTime inTime = LocalDateTime.now().minusHours(1);
+		LocalDateTime ouTime = LocalDateTime.now();
+		ticket.setInTime(inTime);
+		ticket.setOutTime(null);
+		ticket.setParkingSpot(parkingSpot);
+		ticket.setVehicleRegNumber("BBB");
+		parkingSpotDAO.dataBaseConfig = dataBaseTestConfig;
+		parkingSpotDAO.getNextAvailableSlot(parkingSpot.getParkingType());
+		assertEquals(ticketDAO.saveTicket(ticket), false);
+	}
+	// assertThrows(NullPointerException.class, () -> ticketDAO.saveTicket(ticket));
+
+	public void ErrorEntryParkingWithCarBeacauseParkingSportIsFullTest() throws Exception {
+		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
+		Ticket ticket = new Ticket();
+		LocalDateTime inTime = LocalDateTime.now().minusHours(1);
+		LocalDateTime ouTime = LocalDateTime.now();
+		ticket.setInTime(inTime);
+		ticket.setOutTime(ouTime);
+		ticket.setParkingSpot(parkingSpot);
+		ticket.setVehicleRegNumber("BBB");
+		parkingSpotDAO.dataBaseConfig = dataBaseTestConfig;
+		parkingSpotDAO.getNextAvailableSlot(parkingSpot.getParkingType());
+		assertEquals(ticketDAO.saveTicket(ticket), false);
+	}
+	
+	@Test
+	public void ErrorstartedParkingWithBikeWhenTicketIsNotFoundTest() throws Exception {
+		entryParkingWithBikeTest();
+		Ticket ticket = new Ticket();
+		LocalDateTime outTime = LocalDateTime.now();
+		ticket = ticketDAO.getTicket("Axddd");
+		assertNull(ticket);
+	}
+	
+	@Test
+	public void ErrorstartedParkingWithBikeWhenFormatTimeIsBadTest() throws Exception {
+		entryParkingWithBikeTest();
+		Ticket ticket = new Ticket();
+		LocalDateTime outTime = LocalDateTime.now().minusMonths(1);
+		ticket = ticketDAO.getTicket("AAA");
+		ticket.setOutTime(outTime);
+		ticket.setParkingSpot(ticket.getParkingSpot());
+		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("AAA");
+		parkingSpotDAO.getNextAvailableSlot(ticket.getParkingSpot().getParkingType());
+		parkingSpotDAO.updateParking(ticket.getParkingSpot());
+		parkingService.processExitingVehicle();
+		assertEquals(false, ticket.getPrice() > 0 );
 		// TODO: check that the fare generated and out time are populated correctly in
 		// the database
 	}
