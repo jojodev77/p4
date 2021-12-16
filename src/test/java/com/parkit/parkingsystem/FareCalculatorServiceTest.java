@@ -96,7 +96,7 @@ public class FareCalculatorServiceTest {
 		ticket.setOutTime(outTime);
 		ticket.setParkingSpot(parkingSpot);
 		// THEN
-		assertThrows(Exception.class, () -> fareCalculatorService.calculateFare(ticket));
+		assertThrows(NullPointerException.class, () -> fareCalculatorService.calculateFare(ticket));
 	}
 
 	/**

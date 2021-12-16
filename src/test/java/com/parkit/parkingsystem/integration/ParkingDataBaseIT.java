@@ -204,5 +204,22 @@ public class ParkingDataBaseIT {
 		// TODO: check that the fare generated and out time are populated correctly in
 		// the database
 	}
+	
+	@Test
+	public void ErrorstartedParkingWithCarWhenFormatTimeIsBadTest() throws Exception {
+		entryParkingWithCarTest();
+		Ticket ticket = new Ticket();
+		LocalDateTime outTime = LocalDateTime.now().minusMonths(1);
+		ticket = ticketDAO.getTicket("AAA");
+		ticket.setOutTime(outTime);
+		ticket.setParkingSpot(ticket.getParkingSpot());
+		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("AAA");
+		parkingSpotDAO.getNextAvailableSlot(ticket.getParkingSpot().getParkingType());
+		parkingSpotDAO.updateParking(ticket.getParkingSpot());
+		parkingService.processExitingVehicle();
+		assertEquals(false, ticket.getPrice() > 0 );
+		// TODO: check that the fare generated and out time are populated correctly in
+		// the database
+	}
 
 }

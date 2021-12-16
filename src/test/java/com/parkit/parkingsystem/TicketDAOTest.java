@@ -136,7 +136,7 @@ public class TicketDAOTest {
 		ps.setDouble(1, ticket.getPrice());
 		ps.setTimestamp(2, Timestamp.valueOf((ticket.getOutTime())));
 		ps.setInt(3, ticket.getId());
-		
+
 		// THEN
 		assertEquals(false, ps.execute());
 	}
