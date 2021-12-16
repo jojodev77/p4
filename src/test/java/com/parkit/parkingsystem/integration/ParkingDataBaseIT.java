@@ -71,6 +71,11 @@ public class ParkingDataBaseIT {
 
 	}
 
+	/**
+	 * 
+	 * @throws Exception
+	 * @description simulation of entry car in the parking
+	 */
 	@Test
 	public void entryParkingWithCarTest() throws Exception {
 		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, true);
@@ -93,6 +98,11 @@ public class ParkingDataBaseIT {
 		// with availability
 	}
 
+	/**
+	 * 
+	 * @throws Exception
+	 * @description simulation of entry bike in the parking
+	 */
 	@Test
 	public void entryParkingWithBikeTest() throws Exception {
 		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE, true);
@@ -115,6 +125,11 @@ public class ParkingDataBaseIT {
 		// with availability
 	}
 
+	/**
+	 * 
+	 * @throws Exception
+	 * @description simulation of started car in the parking and verify timer of ticket
+	 */
 	@Test
 	public void startedParkingWithCarTest() throws Exception {
 		entryParkingWithCarTest();
@@ -131,7 +146,12 @@ public class ParkingDataBaseIT {
 		// TODO: check that the fare generated and out time are populated correctly in
 		// the database
 	}
-
+	
+	/**
+	 * 
+	 * @throws Exception
+	 * @description simulation of started bike in the parking and verify timer of ticket
+	 */
 	@Test
 	public void startedParkingWithBikeTest() throws Exception {
 		entryParkingWithBikeTest();
@@ -149,6 +169,11 @@ public class ParkingDataBaseIT {
 		// the database
 	}
 
+	/**
+	 * 
+	 * @throws Exception
+	 * @description simulation of entry car in the parking with error of timing
+	 */
 	@Test
 	public void ErrorEntryParkingWithCarBeacauseOutimeIsEmptyTest() throws Exception {
 		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, true);
@@ -165,6 +190,11 @@ public class ParkingDataBaseIT {
 	}
 	// assertThrows(NullPointerException.class, () -> ticketDAO.saveTicket(ticket));
 
+	/**
+	 * 
+	 * @throws Exception
+	 * @description simulation of entry car in the parking with error of parkingSpot
+	 */
 	public void ErrorEntryParkingWithCarBeacauseParkingSportIsFullTest() throws Exception {
 		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
 		Ticket ticket = new Ticket();
@@ -179,6 +209,11 @@ public class ParkingDataBaseIT {
 		assertEquals(ticketDAO.saveTicket(ticket), false);
 	}
 	
+	/**
+	 * 
+	 * @throws Exception
+	 * @description simulation of started with car when ticket is null
+	 */
 	@Test
 	public void ErrorstartedParkingWithBikeWhenTicketIsNotFoundTest() throws Exception {
 		entryParkingWithBikeTest();
@@ -188,6 +223,11 @@ public class ParkingDataBaseIT {
 		assertNull(ticket);
 	}
 	
+	/**
+	 * 
+	 * @throws Exception
+	 * @description simulation of started with bike time format is bad
+	 */
 	@Test
 	public void ErrorstartedParkingWithBikeWhenFormatTimeIsBadTest() throws Exception {
 		entryParkingWithBikeTest();
@@ -205,6 +245,11 @@ public class ParkingDataBaseIT {
 		// the database
 	}
 	
+	/**
+	 * 
+	 * @throws Exception
+	 * @description simulation of started with car time format is bad
+	 */
 	@Test
 	public void ErrorstartedParkingWithCarWhenFormatTimeIsBadTest() throws Exception {
 		entryParkingWithCarTest();
