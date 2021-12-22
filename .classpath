@@ -32,5 +32,10 @@
 	<classpathentry exported="true" kind="lib" path="C:/Users/j.de-la-osa/Downloads/jar_files/mysql-connector-java-8.0.25.jar"/>
 	<classpathentry exported="true" kind="lib" path="C:/Users/j.de-la-osa/Downloads/jar_files/protobuf-java-3.11.4.jar"/>
 	<classpathentry kind="lib" path="src/main/resources/log4j.properties"/>
+	<classpathentry kind="lib" path="resources/ignore.xml">
+		<attributes>
+			<attribute name="test" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

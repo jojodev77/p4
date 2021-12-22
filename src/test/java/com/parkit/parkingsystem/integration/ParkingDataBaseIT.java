@@ -70,6 +70,41 @@ public class ParkingDataBaseIT {
 	private static void tearDown() {
 
 	}
+	@BeforeAll
+	public void entryParkingWithCarMethod() {
+		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, true);
+		Ticket ticket = new Ticket();
+		LocalDateTime inTime = LocalDateTime.now().minusHours(1);
+		LocalDateTime ouTime = LocalDateTime.now();
+		ticket.setInTime(inTime);
+		ticket.setOutTime(ouTime);
+		ticket.setParkingSpot(parkingSpot);
+		ticket.setVehicleRegNumber("AAA");
+		when(inputReaderUtil.readSelection()).thenReturn(1);
+		parkingSpotDAO.dataBaseConfig = dataBaseTestConfig;
+		parkingSpotDAO.getNextAvailableSlot(parkingSpot.getParkingType());
+		ticketDAO.saveTicket(ticket);
+		parkingService.processIncomingVehicle();
+	}
+	
+	@BeforeAll
+	public void entryParkingWithBikeMethod() {
+		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE, true);
+		Ticket ticket = new Ticket();
+		LocalDateTime inTime = LocalDateTime.now().minusHours(1);
+		LocalDateTime ouTime = LocalDateTime.now();
+		ticket.setInTime(inTime);
+		ticket.setOutTime(ouTime);
+		ticket.setParkingSpot(parkingSpot);
+		ticket.setVehicleRegNumber("AAA");
+		when(inputReaderUtil.readSelection()).thenReturn(1);
+		parkingSpotDAO.dataBaseConfig = dataBaseTestConfig;
+		parkingSpotDAO.getNextAvailableSlot(parkingSpot.getParkingType());
+		ticketDAO.saveTicket(ticket);
+		parkingService.processIncomingVehicle();
+	}
+	
+	
 
 	/**
 	 * 
@@ -132,7 +167,7 @@ public class ParkingDataBaseIT {
 	 */
 	@Test
 	public void startedParkingWithCarTest() throws Exception {
-		entryParkingWithCarTest();
+		entryParkingWithCarMethod();
 		Ticket ticket = new Ticket();
 		LocalDateTime outTime = LocalDateTime.now();
 		ticket = ticketDAO.getTicket("AAA");
@@ -154,7 +189,7 @@ public class ParkingDataBaseIT {
 	 */
 	@Test
 	public void startedParkingWithBikeTest() throws Exception {
-		entryParkingWithBikeTest();
+		entryParkingWithBikeMethod();
 		Ticket ticket = new Ticket();
 		LocalDateTime outTime = LocalDateTime.now();
 		ticket = ticketDAO.getTicket("AAA");
@@ -216,7 +251,7 @@ public class ParkingDataBaseIT {
 	 */
 	@Test
 	public void ErrorstartedParkingWithBikeWhenTicketIsNotFoundTest() throws Exception {
-		entryParkingWithBikeTest();
+		entryParkingWithBikeMethod();
 		Ticket ticket = new Ticket();
 		LocalDateTime outTime = LocalDateTime.now();
 		ticket = ticketDAO.getTicket("Axddd");
@@ -230,7 +265,7 @@ public class ParkingDataBaseIT {
 	 */
 	@Test
 	public void ErrorstartedParkingWithBikeWhenFormatTimeIsBadTest() throws Exception {
-		entryParkingWithBikeTest();
+		entryParkingWithBikeMethod();
 		Ticket ticket = new Ticket();
 		LocalDateTime outTime = LocalDateTime.now().minusMonths(1);
 		ticket = ticketDAO.getTicket("AAA");
@@ -252,7 +287,7 @@ public class ParkingDataBaseIT {
 	 */
 	@Test
 	public void ErrorstartedParkingWithCarWhenFormatTimeIsBadTest() throws Exception {
-		entryParkingWithCarTest();
+		entryParkingWithCarMethod();
 		Ticket ticket = new Ticket();
 		LocalDateTime outTime = LocalDateTime.now().minusMonths(1);
 		ticket = ticketDAO.getTicket("AAA");

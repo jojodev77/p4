@@ -1,0 +1,6 @@
+<FindBugsFilter>
+
+    <Match>
+        <Bug category="I18N,MT_CORRECTNESS,SECURITY,PERFORMANCE"/>
+    </Match>
+</FindBugsFilter>
